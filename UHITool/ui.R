@@ -13,21 +13,27 @@ library(shiny)
 shinyUI(fluidPage(
 
     # Application title
-    titlePanel("Old Faithful Geyser Data"),
+    titlePanel("Urban Heat Island Calculation Tool"),
 
     # Sidebar with a slider input for number of bins
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
+          textInput("pop", "Population"),
+          textInput("baselineISA", "Baseline ISA"),
+          textInput("baselineTrees", "Baseline Trees"),
+          textInput("baselineGrass", "Baseline Grass"),
+          textInput("ScenarioISA", "Scenario ISA"),
+          textInput("ScenarioTrees", "Scenario Trees"),
+          textInput("ScenarioGrass", "Scenario Grass")
+          
+          #CSV upload 
+         
         ),
 
         # Show a plot of the generated distribution
         mainPanel(
-            plotOutput("distPlot")
+            textOutput("Results"),
+            textOutput("test")
         )
     )
 ))

@@ -8,7 +8,8 @@
 #
 
 library(shiny)
-
+#install.packages("dqshiny")
+library(dqshiny)
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
 
@@ -16,24 +17,24 @@ shinyUI(fluidPage(
     titlePanel("Urban Heat Island Calculation Tool"),
 
     # Sidebar with a slider input for number of bins
-    sidebarLayout(
-        sidebarPanel(
-          textInput("pop", "Population"),
-          textInput("baselineISA", "Baseline ISA"),
-          textInput("baselineTrees", "Baseline Trees"),
-          textInput("baselineGrass", "Baseline Grass"),
-          textInput("ScenarioISA", "Scenario ISA"),
-          textInput("ScenarioTrees", "Scenario Trees"),
-          textInput("ScenarioGrass", "Scenario Grass")
-          
-          #CSV upload 
-         
-        ),
 
         # Show a plot of the generated distribution
-        mainPanel(
-            textOutput("Results"),
-            textOutput("test")
-        )
+        tabsetPanel(
+            tabPanel("Inputs", textInput("pop", "Population of study area"),
+                    textInput("baselineISA", "Baseline Impervious Surface Area (in sq. ft.)"),
+                    textInput("baselineTrees", "Baseline Tree Canopy Cover (in sq. ft.)"),
+                    textInput("baselineGrass", "Baseline Grass"),
+                    textInput("ScenarioISA", "Scenario ISA"),
+                    textInput("ScenarioTrees", "Scenario Trees"),
+                    textInput("ScenarioGrass", "Scenario Grass"),
+            fileInput("file1", "Choose Temperature Data CSV File",
+                      accept = c(
+                          "text/csv",
+                          "text/comma-separated-values,text/plain",
+                          ".csv")
+            )),
+            tabPanel("Results", textOutput("Results")),
+            tabPanel("Test", textOutput("test")),
+            tabPanel("Tempdata", tableOutput("contents")))
     )
-))
+)

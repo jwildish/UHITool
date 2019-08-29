@@ -5,6 +5,17 @@ library(stringr)
 library(dplyr)
 library(ggplot2)
 library(lubridate)
+library(readr)
+
+#x <- read.fwf(file=url("https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"), skip=0,  widths=c(11, 9, 11, 6, 28))
+#colnames(x) <- c('station_id', 'coord1', 'coord2', 'coord3', 'station_name')
+#drops <- c('coord1', 'coord2', 'coord3')
+#x2 <- x[, !(names(x) %in% drops)]
+
+
+stations <- x$station_name
+
+stations<- dplyr::filter(x, grepl("US",station_id))
 
 tempdata <- read.csv("./Gowanus Sample Temp Data.csv")
 

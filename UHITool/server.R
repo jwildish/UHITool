@@ -48,12 +48,15 @@ oldgrass <- reactive({input$baselineGrass})
 newtrees <- reactive({input$ScenarioTrees})
 oldtrees <- reactive({input$baselineTrees})
 
-pct_isa_to_grass = reactive({as.numeric(newgrass()) - as.numeric(oldgrass())})
-pct_isa_to_trees = reactive({as.numeric(newtrees()) - as.numeric(oldtrees())})
+#
+#pct_isa_to_grass = reactive({as.numeric(newgrass()) - as.numeric(oldgrass())})
+#pct_isa_to_trees = reactive({as.numeric(newtrees()) - as.numeric(oldtrees())})
 
 #Import temperature data
 tempdata <- read.csv("./Gowanus Sample Temp Data.csv")
 gowanus_all <- tempdata
+gowanus_all <- subset(gowanus_all, STATION == "USW00014732")
+
 gowanus_all$TAVG <- as.integer(gowanus_all$TAVG)
 gowanus_all$TMAX <- as.integer(gowanus_all$TMAX)
 gowanus_all$TMIN <- as.integer(gowanus_all$TMIN)
@@ -88,7 +91,7 @@ gowanus$rr_tot = 1 + gowanus$rr_temp + gowanus$rr_add_day + gowanus$rr_timing
 gowanus <- gowanus%>%filter(rr_tot > 1)
 
 #Ask Ian about this line
-gowanus$mort_uhi <- ifelse(gowanus$rr_tot < 0, 0, gowanus$rr_tot)
+gowanus$mort_uhi <- (as.numeric(gowanus$rr_tot) - 1)
 
 #check = sum(gowanus$mort_uhi)
 
@@ -154,12 +157,27 @@ avg_change_rr_tot = format(round(as.numeric(mean(gowanus$change_rr_tot, na.rm = 
 
 
 #This output just tests the reactive variables are working
-output$test <- renderText(print(uhi_damages()))
+output$test <- renderText(print(dailysitemortality()))
+
+output$contents <- renderTable({
+    # input$file1 will be NULL initially. After the user selects
+    # and uploads a file, it will be a data frame with 'name',
+    # 'size', 'type', and 'datapath' columns. The 'datapath'
+    # column will contain the local filenames where the data can
+    # be found.
+    inFile <- input$file1
+    
+    if (is.null(inFile))
+        return(NULL)
+    
+    read.csv(inFile$datapath, header = T)
+})
+
 
 output$Results<- renderText({(paste0("The Urban Heat Island effect is currently causing an estimated $", 
                                         print(uhi_damages()), 
                                         " in mortality-related damages in the gowanus area per year. Planting an additional ",
-                                     print(pct_isa_to_trees()),
+                                    # print(pct_isa_to_trees()),
                                         " square meters of tree canopy will decrease proximal air temperatures by ",
                                         format(round(-1*isa_to_trees_avg,2),nsmall = 2), " to ",
                                         format(round(-1*isa_to_trees_max,2),nsmall = 2),"ºC; and will reduce the relative risk of mortality by an estimated ",
